@@ -25,7 +25,7 @@ public class SensorReadingsDisplay extends AbstractDrawingPanel {
     protected List<double[]> lastSensorValues;
     protected int history_size = 256;
 
-    protected float[] scaling_factors = {20, 20, 20};
+    protected float[] scaling_factors = {200, 200, 200};
     protected FFT fft;
     protected List<double[]> lastFFTResult = new ArrayList<double[]>();
 
@@ -72,8 +72,8 @@ public class SensorReadingsDisplay extends AbstractDrawingPanel {
     public void onDraw(Canvas canvas) {
 
         //Fake values, uncomment for testing without sensors:
-        double[] debug = {Math.random()*10-5, Math.random()*10-5, Math.random()*10-5};
-        addSensorValue(debug);
+        //double[] debug = {Math.random()*10-5, Math.random()*10-5, Math.random()*10-5};
+        //addSensorValue(debug);
 
         // Draw background:
         canvas.drawRect(this.drawing_bg_rect, this.drawing_bg_paint);
@@ -115,19 +115,19 @@ public class SensorReadingsDisplay extends AbstractDrawingPanel {
         if(this.lastFFTResult.size() == 0 || this.lastFFTResult.get(0).length == 0)
             return;
 
-        x = 0;
-        y = 0;
-        last_x = 0;
-        last_y = 0;
-
         for (int d = 0; d < this.lastSensorValues.get(0).length; d++) {
-            for (int i = 0; i < this.history_size / 2; i++) { // 2 since complex to complex fft is mirrored after N/2
+            val = 0;
+            x = 0;
+            y = 0;
+            last_x = 0;
+            last_y = 0;
+            for (int i = 1; i < this.history_size / 2; i++) { // 2 since complex to complex fft is mirrored after N/2
 
                 val = (float) this.lastFFTResult.get(d)[i];
                 x = this.drawing_surface_w * i * 1f / (this.history_size/2); // compute x location on screen
-                y = this.drawing_surface_h * 4f/4 - 5 * val; // compute y location on screen
+                y = this.drawing_surface_h * 4f/4 - 50 * val; // compute y location on screen
 
-                if (i > 0) // draw a line between the (i-1)-th value and the i-th one:
+                if (i > 2) // draw a line between the (i-1)-th value and the i-th one:
                     canvas.drawLine(last_x, last_y, x, y, this.drawing_point_paints[d]);
 
                 last_x = x;

@@ -12,7 +12,9 @@ import ubiss.sharescreen.gui.SensorReadingsDisplay;
 public class PlottingActivity extends ActionBarActivity {
 
 
-    protected SensorReadingsDisplay sensorDisplay;
+    public static PlottingActivity instance;
+
+    public SensorReadingsDisplay sensorDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +24,8 @@ public class PlottingActivity extends ActionBarActivity {
         this.sensorDisplay = new SensorReadingsDisplay(this);
         LinearLayout container = (LinearLayout) findViewById(R.id.container_sensor_readings_display);
         container.addView(sensorDisplay);
+
+        PlottingActivity.instance = this;
     }
 
     @Override

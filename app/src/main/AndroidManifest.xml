@@ -14,11 +14,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Vibration"
@@ -33,6 +29,15 @@
             android:name=".RecordingActivity"
             android:label="@string/title_activity_recording" >
 
+        </activity>
+        <activity
+            android:name=".AmbientNoise"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

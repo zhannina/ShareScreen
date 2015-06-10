@@ -10,7 +10,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:theme, android:icon" >
         <activity
-            android:name=".Vibration"
+            android:name=".AmbientNoise"
             android:label="ShareScreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

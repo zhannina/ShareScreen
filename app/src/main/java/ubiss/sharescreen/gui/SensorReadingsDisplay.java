@@ -25,7 +25,7 @@ public class SensorReadingsDisplay extends AbstractDrawingPanel {
     protected List<double[]> lastSensorValues;
     protected int history_size = 256;
 
-    protected float[] scaling_factors = {200, 200, 200};
+    protected float[] scaling_factors = {20, 20, 20};
     protected FFT fft;
     protected List<double[]> lastFFTResult = new ArrayList<double[]>();
 

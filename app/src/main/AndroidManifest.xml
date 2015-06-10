@@ -2,21 +2,32 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ubiss.sharescreen"
     xmlns:tools="http://schemas.android.com/tools" >
-
+    
+    <uses-permission android:name="android.permission.VIBRATE" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         tools:replace="android:theme, android:icon" >
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        
+        <activity
+            android:name=".Vibration"
+            android:label="ShareScreen" >
+        </activity>
+        
+        <activity
+            android:name=".PlottingActivity"
+            android:label="@string/title_activity_plotting" >
         </activity>
     </application>
 

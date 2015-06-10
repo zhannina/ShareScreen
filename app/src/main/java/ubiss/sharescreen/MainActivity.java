@@ -27,7 +27,6 @@ public class MainActivity extends ActionBarActivity {
     private static Aware_Plugin.ContextProducer CONTEXT_PRODUCER = null;
 
     // Test comment Daniel
-    // Test comment Zhanna
 
     private  AccelerometerBR dataReceiver = new AccelerometerBR();
 

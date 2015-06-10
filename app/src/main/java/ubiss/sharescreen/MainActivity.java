@@ -65,6 +65,11 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
+    public void showRecordActivity(View view) {
+        Intent intent = new Intent(this, RecordingActivity.class);
+        startActivity(intent);
+    }
+
     private class AccelerometerBR extends BroadcastReceiver {
 
         @Override
@@ -83,6 +88,10 @@ public class MainActivity extends ActionBarActivity {
                 if(PlottingActivity.instance != null){
                     double[] vals = {accelValueX, accelValueY, accelValueZ};
                     PlottingActivity.instance.sensorDisplay.addSensorValue(vals);
+                }
+                if(RecordingActivity.instance != null){
+                    double[] vals = {accelValueX, accelValueY, accelValueZ};
+                    RecordingActivity.instance.addSensorValue(vals);
                 }
                 Log.d("XVAL", ""+accelValueX);
                 Log.d("YVAL", ""+accelValueY);

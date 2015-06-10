@@ -5,22 +5,41 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.aware.Accelerometer;
 import com.aware.Aware;
 import com.aware.Aware_Preferences;
+import com.aware.Magnetometer;
+import com.aware.providers.Accelerometer_Provider;
+import com.aware.utils.Aware_Plugin;
+import com.aware.utils.Aware_Sensor;
+
+import java.security.Provider;
 
 
 public class MainActivity extends ActionBarActivity {
+    private static Aware_Plugin.ContextProducer CONTEXT_PRODUCER = null;
 
-    // Test comment Daniel
 
-    private static AccelerometerBR accelBR = new AccelerometerBR();
+    private  AccelerometerBR dataReceiver = new AccelerometerBR();
+
+    private double accelValueX = 0;
+    private double accelValueY = 0;
+    private double accelValueZ = 0;
+    private double accelValue = 0;
+
+    public static final String ACTION_AWARE_PLUGIN_SARSENBAYEVA = "ACTION_AWARE_UBISS";
+    public static final String EXTRA_AVG_SARSENBAYEVA = "avg_plugin";
+    public static final String EXTRA_OVER_THRESHOLD = "over_threshold";
+    private static boolean over_threshold;
+    private static int avg = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,43 +47,70 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         Aware.setSetting(getApplicationContext(), Aware_Preferences.STATUS_ACCELEROMETER, true); // to activate aware
+        Intent refresh = new Intent(Aware.ACTION_AWARE_REFRESH);
+        sendBroadcast(refresh);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Accelerometer.ACTION_AWARE_ACCELEROMETER);
-        registerReceiver(accelBR, filter);
 
-        sendBroadcast(new Intent(Aware.ACTION_AWARE_REFRESH));
+
+        registerReceiver(dataReceiver, filter);
+
+        //Any active plugin/sensor shares its overall context using broadcasts
+
     }
 
-    public static class AccelerometerBR extends BroadcastReceiver {
+    public void showPlotActivity(View view) {
+        Intent intent = new Intent(this, PlottingActivity.class);
+        startActivity(intent);
+    }
+
+    public void showRecordActivity(View view) {
+        Intent intent = new Intent(this, RecordingActivity.class);
+        startActivity(intent);
+    }
+
+    private class AccelerometerBR extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            ContentValues raw_data = (ContentValues) intent.getParcelableExtra(Accelerometer.EXTRA_DATA);
-            Log.d("DEMO", raw_data.toString());
-        }
+
+
+            if (intent.getAction().equals(Accelerometer.ACTION_AWARE_ACCELEROMETER)) {
+                ContentValues cv = (ContentValues) intent.getExtras().get(Accelerometer.EXTRA_DATA);
+
+                Log.d("CONTENTVALS", cv.toString());
+
+                accelValueX = cv.getAsDouble("double_values_0");
+                accelValueY = cv.getAsDouble("double_values_1");
+                accelValueZ = cv.getAsDouble("double_values_2");
+
+                if(PlottingActivity.instance != null){
+                    double[] vals = {accelValueX, accelValueY, accelValueZ};
+                    PlottingActivity.instance.sensorDisplay.addSensorValue(vals);
+                }
+                if(RecordingActivity.instance != null){
+                    double[] vals = {accelValueX, accelValueY, accelValueZ};
+                    RecordingActivity.instance.addSensorValue(vals);
+                }
+                Log.d("XVAL", ""+accelValueX);
+                Log.d("YVAL", ""+accelValueY);
+                Log.d("ZVAL", ""+accelValueZ);
+                }
+            }
+
     }
 
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("DESTROY", "Template plugin terminated");
+        Aware.setSetting(this, Aware_Preferences.STATUS_ACCELEROMETER, false);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        //Deactivate any sensors/plugins you activated here
+        //...
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        //Ask AWARE to apply your settings
+        sendBroadcast(new Intent(Aware.ACTION_AWARE_REFRESH));
     }
 }

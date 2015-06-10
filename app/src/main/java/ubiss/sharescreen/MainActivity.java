@@ -1,17 +1,46 @@
 package ubiss.sharescreen;
 
+import android.content.BroadcastReceiver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.aware.Accelerometer;
+import com.aware.Aware;
+import com.aware.Aware_Preferences;
+
 
 public class MainActivity extends ActionBarActivity {
+
+    private static AccelerometerBR accelBR = new AccelerometerBR();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Aware.setSetting(getApplicationContext(), Aware_Preferences.STATUS_ACCELEROMETER, true); // to activate aware
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Accelerometer.ACTION_AWARE_ACCELEROMETER);
+        registerReceiver(accelBR, filter);
+
+        sendBroadcast(new Intent(Aware.ACTION_AWARE_REFRESH));
+    }
+
+    public static class AccelerometerBR extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ContentValues raw_data = (ContentValues) intent.getParcelableExtra(Accelerometer.EXTRA_DATA);
+            Log.d("DEMO", raw_data.toString());
+        }
     }
 
 

@@ -57,16 +57,6 @@ public class MainActivity extends ActionBarActivity {
         registerReceiver(dataReceiver, filter);
 
         //Any active plugin/sensor shares its overall context using broadcasts
-        CONTEXT_PRODUCER = new Aware_Plugin.ContextProducer(){
-            @Override
-            public void onContext() {
-                Intent context_data = new Intent();
-                context_data.setAction(ACTION_AWARE_PLUGIN_SARSENBAYEVA);
-                context_data.putExtra(EXTRA_AVG_SARSENBAYEVA, avg);
-                context_data.putExtra(EXTRA_OVER_THRESHOLD, over_threshold);
-                sendBroadcast(context_data);
-            }
-        };
 
     }
 
@@ -74,41 +64,22 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Cursor accelerometerCursor = context.getContentResolver().query(Accelerometer_Provider.Accelerometer_Data.CONTENT_URI,
-                    null, null, null, Accelerometer_Provider.Accelerometer_Data.TIMESTAMP + " DESC LIMIT 1");
-
-            if (intent.getAction().equals(Magnetometer.ACTION_AWARE_MAGNETOMETER)) {
-                if (accelerometerCursor != null && accelerometerCursor.moveToFirst()) {
-                    accelValueX = accelerometerCursor.getDouble(accelerometerCursor.getColumnIndex(Accelerometer_Provider.Accelerometer_Data.VALUES_0));
-                    accelValueY = accelerometerCursor.getDouble(accelerometerCursor.getColumnIndex(Accelerometer_Provider.Accelerometer_Data.VALUES_1));
-                    accelValueZ = accelerometerCursor.getDouble(accelerometerCursor.getColumnIndex(Accelerometer_Provider.Accelerometer_Data.VALUES_2));
-
-                    // calculate the magnetometer value from 3 readings
-                    accelValue = Math.sqrt(accelValueX * accelValueX +
-                            accelValueY * accelValueY +
-                            accelValueZ * accelValueZ);
-
-                    accelValue = Math.round(accelValue * 100.00) / 100.0;
-                    Log.d("accelerometer value", ""+accelValueX);
-                    Log.d("accelerometer value", ""+accelValueY);
-                    Log.d("accelerometer value", ""+accelValueZ);
-
-                    ContentValues data = new ContentValues();
-                    data.put(ubiss.sharescreen.Provider.ProviderData.TIMESTAMP, System.currentTimeMillis());
-                    data.put(ubiss.sharescreen.Provider.ProviderData.DEVICE_ID, Aware_Preferences.DEVICE_ID);
-                    data.put(ubiss.sharescreen.Provider.ProviderData.ACCEL_VALUE_X, accelValueX);
-                    data.put(ubiss.sharescreen.Provider.ProviderData.ACCEL_VALUE_Y, accelValueY);
-                    data.put(ubiss.sharescreen.Provider.ProviderData.ACCEL_VALUE_Z, accelValueZ);
-                    getContentResolver().insert(ubiss.sharescreen.Provider.ProviderData.CONTENT_URI, data);
-                    CONTEXT_PRODUCER.onContext();
 
 
-                    if( accelerometerCursor != null && !accelerometerCursor.isClosed() ) {
-                        accelerometerCursor.close();
-                    }
+            if (intent.getAction().equals(Accelerometer.ACTION_AWARE_ACCELEROMETER)) {
+                ContentValues cv = (ContentValues) intent.getExtras().get(Accelerometer.EXTRA_DATA);
+
+                Log.d("CONTENTVALS", cv.toString());
+
+                accelValueX = cv.getAsDouble("double_values_0");
+                accelValueY = cv.getAsDouble("double_values_1");
+                accelValueZ = cv.getAsDouble("double_values_2");
+                Log.d("XVAL", ""+accelValueX);
+                Log.d("YVAL", ""+accelValueY);
+                Log.d("ZVAL", ""+accelValueZ);
                 }
             }
-        }
+
     }
 
     @Override

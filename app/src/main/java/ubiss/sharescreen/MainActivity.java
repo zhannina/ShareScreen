@@ -18,6 +18,8 @@ import com.aware.Aware_Preferences;
 
 public class MainActivity extends ActionBarActivity {
 
+    // Test comment Daniel
+
     private static AccelerometerBR accelBR = new AccelerometerBR();
 
     @Override

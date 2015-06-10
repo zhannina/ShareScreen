@@ -19,6 +19,7 @@ import com.aware.Aware_Preferences;
 public class MainActivity extends ActionBarActivity {
 
     // Test comment Daniel
+    // Test comment Zhanna
 
     private static AccelerometerBR accelBR = new AccelerometerBR();
 

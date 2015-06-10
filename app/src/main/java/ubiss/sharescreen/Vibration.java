@@ -5,44 +5,59 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.os.Vibrator;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.aware.Accelerometer;
 import com.aware.Aware;
 import com.aware.Aware_Preferences;
 
 
-public class MainActivity extends ActionBarActivity {
+public class Vibration extends ActionBarActivity {
 
-    // Test comment Daniel
-
-    private static AccelerometerBR accelBR = new AccelerometerBR();
+    private Vibrator vibrator;
+    private Button bt_vibration;
+    boolean IsVibrating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.vibration);
 
-        Aware.setSetting(getApplicationContext(), Aware_Preferences.STATUS_ACCELEROMETER, true); // to activate aware
+        IsVibrating = false;
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Accelerometer.ACTION_AWARE_ACCELEROMETER);
-        registerReceiver(accelBR, filter);
+        bt_vibration = (Button)findViewById(R.id.button_vibration);//获取按钮资源
+        bt_vibration.setOnClickListener(new Button.OnClickListener() {//创建监听
+            public void onClick(View v) {
 
-        sendBroadcast(new Intent(Aware.ACTION_AWARE_REFRESH));
-    }
+                if(IsVibrating)//Vibrating
+                {
+                    vibrator.cancel();
+                    bt_vibration.setText("Start Vibration");
+                    IsVibrating = false;
+                }else{
+                    long [] pattern = {100,400,100,400};    // stop start stop start
+                    vibrator.vibrate(pattern, 2);           // Start,repeat twice
+                    bt_vibration.setText("Stop Vibration");
+                    IsVibrating = true;
+                }
 
-    public static class AccelerometerBR extends BroadcastReceiver {
+            }
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            ContentValues raw_data = (ContentValues) intent.getParcelableExtra(Accelerometer.EXTRA_DATA);
-            Log.d("DEMO", raw_data.toString());
-        }
+        });
+
+        //setting vibration pattern
+        vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+
+
+
+
     }
 
 

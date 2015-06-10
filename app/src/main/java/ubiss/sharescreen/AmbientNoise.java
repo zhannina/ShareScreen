@@ -1,14 +1,11 @@
 package ubiss.sharescreen;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
+
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Vibrator;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -16,7 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.aware.Aware;
 import com.aware.Aware_Preferences;
@@ -27,23 +24,36 @@ public class AmbientNoise extends ActionBarActivity {
     double decibels;
     private TextView tv_noise;
     private static NoiseObserver noiseObs;
+    /**
+     * How frequently do we sample the microphone
+     */
+    public static final String FREQUENCY_PLUGIN_AMBIENT_NOISE = "frequency_plugin_ambient_noise";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("NOISE", "1");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ambientnoise);
 
 
-        frequency=0;
+        frequency = 0;
         decibels=0;
 
-        tv_noise = (TextView)findViewById(R.id.textview_noise);
+        tv_noise = (TextView) findViewById(R.id.textview_noise);
+
         UI_Update();
-        Log.d("NOISE", "1");
-/*
+
+
         Aware.startPlugin(this, "com.aware.plugin.ambient_noise");
-        //Aware.setSetting("status_plugin_ambient_noise", "ture");
+        //Aware.setSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE, 1);
+        //Aware.setSetting(getApplicationContext(), "plugin_ambient_noise_sample_size", 60);
+        //Aware.setSetting(getApplicationContext(), "status_plugin_ambient_noise", true);
+        //Aware.setSetting(getApplicationContext(), Aware_Preferences
+        Aware.setSetting(this, FREQUENCY_PLUGIN_AMBIENT_NOISE, 1);
+        Aware.setSetting(this, "plugin_ambient_noise_sample_size", 60);
+        Aware.setSetting(this, "status_plugin_ambient_noise", true);
+
+
         //frequency_plugin_ambient_noise:1
         //plugin_ambient_noise_sample_size:60
 
@@ -54,9 +64,6 @@ public class AmbientNoise extends ActionBarActivity {
                 database,
                 true,
                 noiseObs );
-*/
-
-
 
     }
 
@@ -89,10 +96,12 @@ public class AmbientNoise extends ActionBarActivity {
     public class NoiseObserver extends ContentObserver {
         public NoiseObserver(Handler handler) {
             super(handler);
+            Log.d("NOISE", "Constructure!");
         }
 
         @Override
         public void onChange(boolean selfChange) {
+            Log.d("NOISE", "onChnage!");
             super.onChange(selfChange);
 
             Uri database = Uri.parse("content://com.aware.plugin.ambient_noise.provider.ambient_noise/plugin_ambient_noise");
@@ -104,13 +113,15 @@ public class AmbientNoise extends ActionBarActivity {
                     null,
                     "timestamp DESC LIMIT 1");
 
-            frequency = raw_data.getDouble(0);
-            decibels = raw_data.getDouble(1);
+            if( raw_data != null && raw_data.moveToFirst() ) {
+                frequency = raw_data.getDouble(0);
+                decibels = raw_data.getDouble(1);
+            }
+
 
             if( raw_data != null && ! raw_data.isClosed() ) raw_data.close();
 
             UI_Update();
-
 
         }
     }

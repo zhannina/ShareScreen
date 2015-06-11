@@ -17,12 +17,15 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Vibration"
             android:label="ShareScreen" >
-
         </activity>
         <activity
             android:name=".PlottingActivity"
@@ -31,16 +34,14 @@
         <activity
             android:name=".RecordingActivity"
             android:label="@string/title_activity_recording" >
-
         </activity>
         <activity
             android:name=".SoundDetectionActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        </activity>
+        <activity
+            android:name=".DemoActivity"
+            android:label="@string/title_activity_demo" >
         </activity>
     </application>
 

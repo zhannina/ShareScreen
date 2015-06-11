@@ -25,7 +25,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     // DB constants:
     private static final String DATABASE_NAME = "ubiss_db";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     // DB structure constants:
 
@@ -35,6 +35,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String SD_COL_ACC_X = "accX";
     private static final String SD_COL_ACC_Y = "accY";
     private static final String SD_COL_ACC_Z = "accZ";
+    private static final String SD_COL_FFT = "fft";
     /*private static final String SD_COL_ROT_X = "rotX";
     private static final String SD_COL_ROT_Y = "rotY";
     private static final String SD_COL_ROT_Z = "rotZ";
@@ -99,7 +100,7 @@ public class DBHandler extends SQLiteOpenHelper {
         String createSensorDataTableString = "CREATE TABLE " + TABLE_SENSOR_DATA + "("
                 + SD_COL_ID + " INTEGER PRIMARY KEY," + SD_COL_ACC_X
                 + " REAL," + SD_COL_ACC_Y + " REAL,"
-                + SD_COL_ACC_Z + " REAL TIMESTAMP NOT NULL DEFAULT current_timestamp," + SD_COL_SEQ_ID + " INTEGER)";
+                + SD_COL_ACC_Z + " REAL, " + SD_COL_FFT + " TEXT, " + SD_COL_SEQ_ID + " INTEGER)";
         db.execSQL(createSensorDataTableString);
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SEQUENCES);
@@ -162,12 +163,12 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
 */
-    public void insertSensorData(List<double[]> dataList, int seqID) {
+    public void insertSensorData(List<double[]> dataList, int seqID, List<String> fftStrings) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         String sql = "INSERT INTO " + TABLE_SENSOR_DATA + " ("+SD_COL_ACC_X+","+SD_COL_ACC_Y+","
-                +SD_COL_ACC_Z + "," + SD_COL_SEQ_ID + ") VALUES (?,?,?,?)";
+                +SD_COL_ACC_Z + "," + SD_COL_FFT + ", " + SD_COL_SEQ_ID + ") VALUES (?,?,?,?,?)";
         SQLiteStatement statement = db.compileStatement(sql);
         db.beginTransaction();
         double[] vals;
@@ -177,7 +178,8 @@ public class DBHandler extends SQLiteOpenHelper {
             statement.bindDouble(1, vals[0]);
             statement.bindDouble(2, vals[1]);
             statement.bindDouble(3, vals[2]);
-            statement.bindLong(4, seqID);
+            statement.bindString(4, fftStrings.get(i));
+            statement.bindLong(5, seqID);
             statement.execute();
         }
         db.setTransactionSuccessful();

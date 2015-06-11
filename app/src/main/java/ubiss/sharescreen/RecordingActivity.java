@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ubiss.sharescreen.db.DBHandler;
+import ubiss.sharescreen.processing.FFT;
 
 
 public class RecordingActivity extends ActionBarActivity {
@@ -31,11 +32,19 @@ public class RecordingActivity extends ActionBarActivity {
 
     private List<double[]> buffer = new ArrayList<double[]>();
 
+    private List<String> fftStrings = new ArrayList<String>();
+
     private  boolean recording = false;
 
     private String label = "label";
 
     private int current_seq_id = -1;
+
+
+    protected FFT fft;
+    protected List<double[]> lastFFTResult = new ArrayList<double[]>();
+    protected List<double[]> lastSensorValues;
+    protected int history_size = 128;
 
 
     @Override
@@ -46,6 +55,10 @@ public class RecordingActivity extends ActionBarActivity {
         this.dbHandler = DBHandler.getInstance(getApplicationContext());
 
         RecordingActivity.instance = this;
+
+        this.lastSensorValues = new ArrayList<double[]>();
+        this.fft = new FFT(this.history_size);
+
     }
 
 
@@ -85,8 +98,10 @@ public class RecordingActivity extends ActionBarActivity {
             this.current_seq_id = this.dbHandler.insertSequence(this.label); // insert new sequence
         } else {
             Log.d("LOGGING", "Logging stopped");
-            this.dbHandler.insertSensorData(this.buffer, this.current_seq_id);
+            this.dbHandler.insertSensorData(this.buffer, this.current_seq_id, this.fftStrings);
             buffer.clear();
+            this.fftStrings.clear();
+            this.lastSensorValues.clear();
             ((Button) view).setText("Start");
         }
     }
@@ -102,9 +117,50 @@ public class RecordingActivity extends ActionBarActivity {
 
 
     public void addSensorValue(double[] vals) {
-        if(this.buffer != null && this.recording) {
+
+        this.lastSensorValues.add(vals);
+        if (this.lastSensorValues.size() > this.history_size)
+            this.lastSensorValues.remove(0);
+
+        if(this.lastSensorValues.size() >= this.history_size && this.buffer != null && this.recording) {
             this.buffer.add(vals);
+
+            this.lastFFTResult.clear();
+            for (int d = 0; d < this.lastSensorValues.get(0).length; d++) {
+                this.lastFFTResult.add(new double[this.lastSensorValues.size()]);
+            }
+            for (int d = 0; d < this.lastSensorValues.get(0).length; d++) {
+                double[] timeseries1Dre = new double[this.lastSensorValues.size()];
+                double[] timeseries1Dimg = new double[this.lastSensorValues.size()];
+                for (int i = 0; i < this.lastSensorValues.size(); i++) {
+                    timeseries1Dre[i] = this.lastSensorValues.get(i)[d];
+                }
+                this.fft.fft(timeseries1Dre, timeseries1Dimg);
+
+                double[] fftmag = new double[this.history_size];
+                for (int i = 0; i < this.history_size; i++) {
+                    double mag = Math.sqrt(timeseries1Dre[i] * timeseries1Dre[i] + timeseries1Dimg[i] * timeseries1Dimg[i]);
+                    fftmag[i] = mag;
+                }
+                this.lastFFTResult.set(d, fftmag);
+            }
+
+            StringBuffer sb = new StringBuffer();
+            for (int d = 0; d < 3; d++) {
+                for (int i = 0; i < this.history_size/2; i++) { // 2 since complex to complex fft is mirrored after N/2
+                    double mag = Math.round(this.lastFFTResult.get(d)[i]*1000)/1000.;
+                    sb.append(mag + ",");
+                }
+                sb.deleteCharAt(sb.length()-1);
+                sb.append(";");
+            }
+            sb.deleteCharAt(sb.length()-1);
+            this.fftStrings.add(sb.toString());
+            //Log.d("FFT", sb.toString());
         }
+
+
+
     }
 
 

@@ -170,7 +170,7 @@ public class SensorReadingsDisplay extends AbstractDrawingPanel {
 
             StringBuffer sb = new StringBuffer();
             for(int i = 0; i < this.history_size; i++){
-                double mag = Math.sqrt(this.lastFFTResult.get(0)[i]);
+                double mag = this.lastFFTResult.get(0)[i];
                 sb.append(mag + ",");
             }
             //Log.d("FFT", sb.toString());

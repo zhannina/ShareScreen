@@ -70,6 +70,11 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
+    public void showVibrationActivity(View view) {
+        Intent intent = new Intent(this, Vibration.class);
+        startActivity(intent);
+    }
+
     private class AccelerometerBR extends BroadcastReceiver {
 
         @Override

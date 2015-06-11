@@ -30,10 +30,12 @@ public class Vibration extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.vibration);
 
+        //Aware.startPlugin(this, "com.aware.plugin.ambient_noise");
+
         IsVibrating = false;
 
-        bt_vibration = (Button)findViewById(R.id.button_vibration);//获取按钮资源
-        bt_vibration.setOnClickListener(new Button.OnClickListener() {//创建监听
+        bt_vibration = (Button)findViewById(R.id.button_vibration);
+        bt_vibration.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
 
                 if(IsVibrating)//Vibrating

@@ -1,4 +1,4 @@
-package ubiss.sharescreen;
+package ubiss.sharescreen.processing;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -6,7 +6,7 @@ import android.media.MediaRecorder;
 import android.util.Log;
 
 /**
- * Created by L on 2015/6/11.
+ * Created by Pingjiang on 2015/6/11.
  */
 public class AudioRecordDemo {
 
@@ -31,7 +31,7 @@ public class AudioRecordDemo {
                 SAMPLE_RATE_IN_HZ, AudioFormat.CHANNEL_IN_DEFAULT,
                 AudioFormat.ENCODING_PCM_16BIT, BUFFER_SIZE);
         if (mAudioRecord == null) {
-            Log.e("sound", "mAudioRecord初始化失败");
+            Log.e("sound", "mAudioRecord failed.");
         }
         isGetVoiceRun = true;
 
@@ -41,14 +41,14 @@ public class AudioRecordDemo {
                 mAudioRecord.startRecording();
                 short[] buffer = new short[BUFFER_SIZE];
                 while (isGetVoiceRun) {
-                    //r是实际读取的数据长度，一般而言r会小于buffersize
+                    //r is the length of real data, r will small buffer size
                     int r = mAudioRecord.read(buffer, 0, BUFFER_SIZE);
                     long v = 0;
-                    // 将 buffer 内容取出，进行平方和运算
+                    // get the buffer and square it
                     for (int i = 0; i < buffer.length; i++) {
                         v += buffer[i] * buffer[i];
                     }
-                    // 平方和除以数据总长度，得到音量大小。
+                    // get volumn
                     double mean = v / (double) r;
                     double volume = 10 * Math.log10(mean);
 

@@ -29,4 +29,16 @@
         android:layout_alignParentEnd="true"
         android:onClick="showRecordActivity"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vibrate"
+        android:id="@+id/vibrate_button"
+        android:layout_below="@+id/record_button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="showVibrationActivity"/>
+
 </RelativeLayout>

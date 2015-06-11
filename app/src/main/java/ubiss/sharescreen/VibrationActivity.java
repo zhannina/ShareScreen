@@ -19,7 +19,7 @@ import com.aware.Aware;
 import com.aware.Aware_Preferences;
 
 
-public class Vibration extends ActionBarActivity {
+public class VibrationActivity extends ActionBarActivity {
 
     private Vibrator vibrator;
     private Button bt_vibration;

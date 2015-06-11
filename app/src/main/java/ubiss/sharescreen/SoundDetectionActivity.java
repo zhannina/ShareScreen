@@ -1,18 +1,13 @@
 package ubiss.sharescreen;
 
 
-import android.database.ContentObserver;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.aware.Aware;
+import ubiss.sharescreen.processing.AudioRecordDemo;
 
 public class SoundDetectionActivity extends ActionBarActivity {
 

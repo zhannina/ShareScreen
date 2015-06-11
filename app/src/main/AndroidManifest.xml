@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Vibration"
+            android:name=".VibrationActivity"
             android:label="ShareScreen" >
         </activity>
         <activity

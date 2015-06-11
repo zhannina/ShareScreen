@@ -3,40 +3,43 @@ package ubiss.sharescreen;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import ubiss.sharescreen.gui.SensorReadingsDisplay;
 import ubiss.sharescreen.processing.AudioRecordDemo;
+import ubiss.sharescreen.processing.DynamicPlot;
+
 
 public class SoundDetectionActivity extends ActionBarActivity {
 
-    double frequency;
-    double decibels;
-    private TextView tv_noise;
+
+    public static SoundDetectionActivity instance;
+
+
+    private DynamicPlot dGraphView;
+    private DynamicPlot fGraphView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ambientnoise);
+        setContentView(R.layout.activity_sound);
+
+        dGraphView = (DynamicPlot)findViewById(R.id.graph_decibel);
+        dGraphView.setMaxValue(10);
+        fGraphView = (DynamicPlot)findViewById(R.id.graph_frequency);
+        fGraphView.setMaxValue(10);
+
+        SoundDetectionActivity.instance = this;
 
         AudioRecordDemo audio = new AudioRecordDemo();
         audio.getNoiseLevel();
 
-        frequency = 0;
-        decibels=0;
-
-        tv_noise = (TextView) findViewById(R.id.textview_noise);
-
-        UI_Update();
-
-
-    }
-
-    private void UI_Update() {
-        tv_noise.setText("frequency: "+frequency+"\ndecibel: "+decibels);
     }
 
 
@@ -60,6 +63,27 @@ public class SoundDetectionActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void addDecibel(final double point) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("PaintSound", "Called. " + ((point-50)/100+5));
+                dGraphView.addDataPoint(((point-50)/100+5));
+            }
+        });
+    }
+    public void addFrequency(final double[] array) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for(int i=0;i<array.length;i++)
+                    array[i]=array[i]/2000;
+
+                fGraphView.addDataArray(array);
+            }
+        });
     }
 
 }

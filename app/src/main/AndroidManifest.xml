@@ -36,11 +36,15 @@
         <activity
             android:name=".RecordingActivity"
             android:label="@string/title_activity_recording" >
+
         </activity>
         <activity
             android:name=".SoundDetectionActivity"
             android:label="@string/app_name" >
-
+        </activity>
+        <activity
+            android:name=".DemoActivity"
+            android:label="@string/title_activity_demo" >
         </activity>
     </application>
 

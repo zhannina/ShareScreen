@@ -23,12 +23,15 @@ import com.aware.utils.Aware_Sensor;
 
 import java.security.Provider;
 
+import ubiss.sharescreen.processing.Smoothing;
+
 
 public class MainActivity extends ActionBarActivity {
     private static Aware_Plugin.ContextProducer CONTEXT_PRODUCER = null;
 
 
     private  AccelerometerBR dataReceiver = new AccelerometerBR();
+    private Smoothing smoothing = new Smoothing(25);
 
     private double accelValueX = 0;
     private double accelValueY = 0;
@@ -71,7 +74,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void showVibrationActivity(View view) {
-        Intent intent = new Intent(this, Vibration.class);
+        Intent intent = new Intent(this, VibrationActivity.class);
         startActivity(intent);
     }
 
@@ -95,17 +98,17 @@ public class MainActivity extends ActionBarActivity {
                 accelValueY = cv.getAsDouble("double_values_1");
                 accelValueZ = cv.getAsDouble("double_values_2");
 
+                double[] vals = {accelValueX, accelValueY, accelValueZ};
+                vals = smoothing.smooth(vals);
+
                 if(PlottingActivity.instance != null){
-                    double[] vals = {accelValueX, accelValueY, accelValueZ};
                     PlottingActivity.instance.sensorDisplay.addSensorValue(vals);
                 }
                 if(RecordingActivity.instance != null){
-                    double[] vals = {accelValueX, accelValueY, accelValueZ};
                     RecordingActivity.instance.addSensorValue(vals);
                 }
 
                 if(DemoActivity.instance != null){
-                    double[] vals = {accelValueX, accelValueY, accelValueZ};
                     DemoActivity.instance.update(vals);
                 }
                 Log.d("XVAL", ""+accelValueX);

@@ -144,9 +144,10 @@ public class SVM {
         ;
 
         // Iterate over all one-vs-one problem svms:
+        SVMO svm_i;
         for (int i = 0; i < this.svms.size(); i++) {
 
-            SVMO svm_i = this.svms.get(i);
+            svm_i = this.svms.get(i);
 
             // Compute prediction of the current svm:
             double prediction = 0;
@@ -172,7 +173,7 @@ public class SVM {
             // Add a vote for the class predicted by this svm:
             votes[predicted_class] += 1;
 
-            Log.d("SVM", svm_i.c1 + ", " + svm_i.c2 + ", " + prediction + ", " + predicted_class);
+            //Log.d("SVM", svm_i.c1 + ", " + svm_i.c2 + ", " + prediction + ", " + predicted_class);
         }
         ;
 

@@ -7,4 +7,16 @@
     tools:context="ubiss.sharescreen.DemoActivity">
 
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="..."
+        android:id="@+id/prediction_textView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:textAlignment="center" />
 </RelativeLayout>

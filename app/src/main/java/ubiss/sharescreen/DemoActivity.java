@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +35,15 @@ public class DemoActivity extends ActionBarActivity {
     protected int history_size = 128;
 
     protected double[] feature_vec = new double[189];
+
+    protected int last_pred;
+
+    double[] fftmag;
+    double[] timeseries1Dre;
+    double[] timeseries1Dimg;
+
+    protected List<Integer> predBuffer = new ArrayList<Integer>();
+    protected int predBufferSize = 20;
 
 
     @Override
@@ -84,36 +94,62 @@ public class DemoActivity extends ActionBarActivity {
             this.lastFFTResult.clear();
 
             for (int d = 0; d < this.lastSensorValues.get(0).length; d++) {
-                double[] timeseries1Dre = new double[this.lastSensorValues.size()];
-                double[] timeseries1Dimg = new double[this.lastSensorValues.size()];
+                timeseries1Dre = new double[this.lastSensorValues.size()];
+                timeseries1Dimg = new double[this.lastSensorValues.size()];
                 for (int i = 0; i < this.lastSensorValues.size(); i++) {
                     timeseries1Dre[i] = this.lastSensorValues.get(i)[d];
                 }
                 this.fft.fft(timeseries1Dre, timeseries1Dimg);
 
-                double[] fftmag = new double[this.history_size];
+                fftmag = new double[this.history_size];
+                double mag;
                 for (int i = 0; i < this.history_size; i++) {
-                    double mag = Math.sqrt(timeseries1Dre[i] * timeseries1Dre[i] + timeseries1Dimg[i] * timeseries1Dimg[i]);
+                    mag = Math.sqrt(timeseries1Dre[i] * timeseries1Dre[i] + timeseries1Dimg[i] * timeseries1Dimg[i]);
                     fftmag[i] = mag;
                 }
                 this.lastFFTResult.add(fftmag);
             }
+            this.lastSensorValues.clear();//TODO: DEBUG
 
 
             if(this.svm != null){
 
-                StringBuffer sb = new StringBuffer();
+                //StringBuffer sb = new StringBuffer();
                 for(int d = 0; d < 3; d++){
                     for (int i = 0; i < 63; i++) {
                         this.feature_vec[d*63+i] = this.lastFFTResult.get(d)[i+1];
-                        sb.append(this.feature_vec[d*63+1] + ", ");
+                        //sb.append(this.feature_vec[d*63+1] + ", ");
                     }
                 }
                 int pred = this.svm.predictWithSVM(this.feature_vec);
 
 
+                /*
+                this.predBuffer.add(pred);
+                if(this.predBuffer.size() > this.predBufferSize)
+                    this.predBuffer.remove(0);
+
+                int[] counts = new int[3]; // 3 classes
+                for(Integer i : this.predBuffer){
+                    counts[i] += 1;
+                }
+                if (counts[0] > 10) pred = 0;
+                else if (counts[1] > 10) pred = 1;
+                else if (counts[2] > 10) pred = 2;
+                */
+
                 //Log.d("DEBUG", sb.toString());
-                Log.d("SVM PRED", "prediction: " + pred);
+                if(pred != last_pred) {
+                    //Log.d("SVM PRED", "prediction: " + pred);
+                    String text = "...";
+                    if (pred == 0) text = "left";
+                    else if (pred == 1) text = "right";
+
+                    ((TextView) findViewById(R.id.prediction_textView)).setText(text);
+                }
+                this.last_pred = pred;
+
+
             }
 
         }

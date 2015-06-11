@@ -71,7 +71,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void showVibrationActivity(View view) {
-        Intent intent = new Intent(this, Vibration.class);
+        Intent intent = new Intent(this, VibrationActivity.class);
         startActivity(intent);
     }
 

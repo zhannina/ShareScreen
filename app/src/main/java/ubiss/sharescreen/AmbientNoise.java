@@ -49,9 +49,8 @@ public class AmbientNoise extends ActionBarActivity {
         //Aware.setSetting(getApplicationContext(), "plugin_ambient_noise_sample_size", 60);
         //Aware.setSetting(getApplicationContext(), "status_plugin_ambient_noise", true);
         //Aware.setSetting(getApplicationContext(), Aware_Preferences
-        Aware.setSetting(this, FREQUENCY_PLUGIN_AMBIENT_NOISE, 1);
-        Aware.setSetting(this, "plugin_ambient_noise_sample_size", 60);
-        Aware.setSetting(this, "status_plugin_ambient_noise", true);
+        //Aware.setSetting(this, FREQUENCY_PLUGIN_AMBIENT_NOISE, 1);
+        Aware.setSetting(this, "plugin_ambient_noise_sample_size", 60, "com.aware.plugin.ambient_noise");
 
 
         //frequency_plugin_ambient_noise:1

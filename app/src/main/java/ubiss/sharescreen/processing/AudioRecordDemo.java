@@ -5,10 +5,18 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.util.Log;
 
+import ubiss.sharescreen.PlottingActivity;
+import ubiss.sharescreen.SoundDetectionActivity;
+import ubiss.sharescreen.gui.SensorReadingsDisplay;
+
 /**
  * Created by Pingjiang on 2015/6/11.
  */
 public class AudioRecordDemo {
+
+    protected FFT fft;
+    int fft_size;
+    boolean IsThreadRunning;
 
     private static final String TAG = "AudioRecord";
     static final int SAMPLE_RATE_IN_HZ = 8000;
@@ -35,14 +43,33 @@ public class AudioRecordDemo {
         }
         isGetVoiceRun = true;
 
+        //FFT Initialization
+        fft_size=2;
+        for(int i=0;i<BUFFER_SIZE;i++)
+        {
+            if(fft_size>BUFFER_SIZE)
+                break;
+            fft_size*=2;
+        }
+        fft_size/=2;
+        //debug
+        fft_size=128;
+
+        this.fft = new FFT(fft_size);
+
+        IsThreadRunning=false;
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+                android.os.Process.setThreadPriority(-22);
                 mAudioRecord.startRecording();
-                short[] buffer = new short[BUFFER_SIZE];
+                short[] buffer = new short[fft_size];
                 while (isGetVoiceRun) {
-                    //r is the length of real data, r will small buffer size
-                    int r = mAudioRecord.read(buffer, 0, BUFFER_SIZE);
+                    IsThreadRunning=true;
+                    mAudioRecord.startRecording();
+                    //r is the length of real data, r is smaller than buffer size
+                    int r = mAudioRecord.read(buffer, 0, fft_size);
                     long v = 0;
                     // get the buffer and square it
                     for (int i = 0; i < buffer.length; i++) {
@@ -53,17 +80,35 @@ public class AudioRecordDemo {
                     double volume = 10 * Math.log10(mean);
 
                     //Frequency
-                    //currentFrequency = processSampleData(bufferRead, SAMPLE_RATE);
+                    double[] timeseries1Dre = new double[fft_size];
+                    double[] timeseries1Dimg = new double[fft_size];
 
-                    Log.d(TAG, "decibels:" + volume);
-                    // 10 times 1 seconds
-                    synchronized (mLock) {
+                    for (int i = 0; i < buffer.length; i++)
+                    {
+                        timeseries1Dre[i]=(double) buffer[i];
+                    }
+
+                    fft.fft(timeseries1Dre, timeseries1Dimg);
+
+                    //draw plot
+                    if(SoundDetectionActivity.instance != null){
+                        //double[] vals = {accelValueX, accelValueY, accelValueZ};
+                        //double[] vals = {volume/40,volume/40,volume/40};
+                        SoundDetectionActivity.instance.addDecibel(volume);
+                        SoundDetectionActivity.instance.addFrequency(timeseries1Dre);
+                    }
+
+                    Log.d(TAG, "decibels:" + volume%100 + ", b[1]="+buffer[1]+",t[1]"+timeseries1Dre[1]);
+                    IsThreadRunning=false;
+                    // repeat
+                    /*synchronized (mLock) {
                         try {
-                            mLock.wait(100);
+                            mLock.wait(150);//delay, in ms
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                    }
+                    }*/
+
                 }
                 mAudioRecord.stop();
                 mAudioRecord.release();

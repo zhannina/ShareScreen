@@ -22,10 +22,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".VibrationActivity"
             android:label="ShareScreen" >
+
         </activity>
         <activity
             android:name=".PlottingActivity"
@@ -34,6 +36,7 @@
         <activity
             android:name=".RecordingActivity"
             android:label="@string/title_activity_recording" >
+
         </activity>
         <activity
             android:name=".SoundDetectionActivity"

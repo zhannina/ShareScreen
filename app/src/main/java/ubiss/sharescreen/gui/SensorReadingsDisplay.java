@@ -112,7 +112,9 @@ public class SensorReadingsDisplay extends AbstractDrawingPanel {
 
         // Plot FFT results:
 
-        if(this.lastFFTResult.size() == 0 || this.lastFFTResult.get(0).length == 0)
+        if(this.lastFFTResult.size() == 0)
+            return;
+        if(this.lastFFTResult.get(0).length == 0)
             return;
 
         for (int d = 0; d < this.lastSensorValues.get(0).length; d++) {
@@ -122,6 +124,8 @@ public class SensorReadingsDisplay extends AbstractDrawingPanel {
             last_x = 0;
             last_y = 0;
             for (int i = 1; i < this.history_size / 2; i++) { // 2 since complex to complex fft is mirrored after N/2
+
+
 
                 val = (float) this.lastFFTResult.get(d)[i];
                 x = this.drawing_surface_w * i * 1f / (this.history_size/2); // compute x location on screen

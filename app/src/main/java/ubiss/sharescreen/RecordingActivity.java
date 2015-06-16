@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.aware.Accelerometer;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ubiss.sharescreen.db.DBHandler;
+import ubiss.sharescreen.gui.SensorReadingsDisplay;
 import ubiss.sharescreen.processing.FFT;
 
 
@@ -46,6 +48,7 @@ public class RecordingActivity extends ActionBarActivity {
     protected List<double[]> lastSensorValues;
     protected int history_size = 128;
 
+    //public SensorReadingsDisplay sensorDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,10 @@ public class RecordingActivity extends ActionBarActivity {
 
         this.lastSensorValues = new ArrayList<double[]>();
         this.fft = new FFT(this.history_size);
+
+        /*this.sensorDisplay = new SensorReadingsDisplay(this);
+        LinearLayout container = (LinearLayout) findViewById(R.id.container_sensor_readings_display);
+        container.addView(sensorDisplay);*/
 
     }
 

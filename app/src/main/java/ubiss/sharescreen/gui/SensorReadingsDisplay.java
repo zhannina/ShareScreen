@@ -23,7 +23,7 @@ public class SensorReadingsDisplay extends AbstractDrawingPanel {
     protected Paint[] drawing_point_paints;
 
     protected List<double[]> lastSensorValues;
-    protected int history_size = 256;
+    protected int history_size = 128;
 
     protected float[] scaling_factors = {20, 20, 20};
     protected FFT fft;
@@ -147,7 +147,7 @@ public class SensorReadingsDisplay extends AbstractDrawingPanel {
         if(this.lastSensorValues.size() > this.history_size)
             this.lastSensorValues.remove(0);
 
-        if(this.lastSensorValues.size() % 256 == 0){
+        if(this.lastSensorValues.size() % this.history_size == 0){
             this.lastFFTResult.clear();
             for (int d = 0; d < this.lastSensorValues.get(0).length; d++) {
                 this.lastFFTResult.add(new double[this.lastSensorValues.size()]);

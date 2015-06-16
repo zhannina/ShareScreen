@@ -1,13 +1,14 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="ubiss.sharescreen.RecordingActivity">
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/label_editText"
         android:layout_alignParentTop="true"
@@ -18,7 +19,7 @@
         android:text="label" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Start"
         android:id="@+id/recording_button"
@@ -29,8 +30,18 @@
         android:layout_alignParentEnd="true"
         android:onClick="switchRecording"/>
 
+    <LinearLayout
+        android:id="@+id/container_sensor_readings_display"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_weight="1"
+        android:layout_alignParentStart="true"></LinearLayout>
+
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Export Database"
         android:id="@+id/export_db_button"
@@ -40,4 +51,4 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:onClick="exportDB"/>
-</RelativeLayout>
+</LinearLayout>
